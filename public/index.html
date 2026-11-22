@@ -1,0 +1,148 @@
+<!doctype html>
+<!-- Loop — Looking Promos · Hélio Delfino Lopes de Alcântara — Pesquisador e pentester web especializado / Security researcher & web penetration tester -->
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>LOOP — Looking Promos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- HOME -->
+  <section id="home" class="view">
+    <header class="topbar">
+      <nav><a href="#/" data-scroll="history">Buscas</a><a href="#/" data-scroll="saved">Salvas</a></nav>
+      <nav><a href="#/sobre">Sobre</a></nav>
+    </header>
+
+    <div class="collage" id="collage">
+      <h1 class="wordmark">LOOP</h1>
+      <p class="tagline">Looking promos</p>
+
+      <form class="searchwrap" id="searchForm" autocomplete="off">
+        <label for="q">O que você quer achar?</label>
+        <input id="q" name="q" type="text" placeholder="perfume árabe" maxlength="120" required>
+        <div class="pills" role="group" aria-label="O que procurar">
+          <button type="button" class="pill on" data-mode="stores" aria-pressed="true">Lojas</button>
+          <button type="button" class="pill on" data-mode="products" aria-pressed="true">Produtos</button>
+          <button type="button" class="pill on" data-mode="promos" aria-pressed="true">Promoções</button>
+        </div>
+        <button type="submit" class="circle">Procurar</button>
+        <p class="form-error" id="formError" role="alert"></p>
+      </form>
+
+      <!-- tiles das buscas salvas/recentes entram aqui via JS -->
+      <h2 class="bigline">BLACK FRIDAY</h2>
+    </div>
+
+    <section class="history" id="history">
+      <h2 class="eyebrow">Histórico</h2>
+      <ol id="historyList" class="history-list"></ol>
+    </section>
+  </section>
+
+  <!-- RESULTADOS -->
+  <section id="results" class="view" hidden>
+    <header class="topbar results-bar">
+      <a href="#/" class="logo">LOOP</a>
+      <form class="mini-search" id="miniForm" autocomplete="off">
+        <label for="q2" class="sr-only">Buscar</label>
+        <input id="q2" type="text" maxlength="120" required>
+        <button type="submit" class="btn solid">Procurar</button>
+      </form>
+      <nav><a href="#/">Buscas</a></nav>
+    </header>
+
+    <main class="wrap">
+      <div class="title-row">
+        <div>
+          <p class="eyebrow red" id="statusLine">Resultado da varredura</p>
+          <h1 class="term" id="termTitle"></h1>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn" id="saveBtn">Salvar busca</button>
+          <button type="button" class="btn" id="rerunBtn">Rodar de novo</button>
+          <a class="btn" id="csvBtn" href="#">Exportar CSV</a>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" class="tab" data-tab="stores">Lojas <span class="count" id="cStores"></span></button>
+        <button type="button" role="tab" class="tab" data-tab="products">Produtos <span class="count" id="cProducts"></span></button>
+        <button type="button" role="tab" class="tab" data-tab="promos">Promoções <span class="count" id="cPromos"></span></button>
+      </div>
+
+      <div id="loading" class="loading" hidden>
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Varrendo a web… lojas levam uns 10 segundos.</p>
+      </div>
+
+      <section class="panel" data-panel="stores">
+        <div class="toolbar">
+          <label for="storeFilter">Mostrar</label>
+          <select id="storeFilter">
+            <option value="all">Todas</option>
+            <option value="niche">Só lojas de nicho</option>
+            <option value="big">Só grande varejo</option>
+          </select>
+          <label><input type="checkbox" id="hideContent" checked> Esconder sites de conteúdo</label>
+        </div>
+        <div id="storeGrid" class="store-grid"></div>
+      </section>
+
+      <section class="panel" data-panel="products" hidden>
+        <div class="toolbar">
+          <label for="sortProducts">Ordenar</label>
+          <select id="sortProducts">
+            <option value="discount">Maior desconto</option>
+            <option value="price">Menor preço</option>
+            <option value="priceDesc">Maior preço</option>
+          </select>
+          <label for="sourceProducts" class="sr-only">Fonte</label>
+          <select id="sourceProducts">
+            <option value="">Todas as fontes</option>
+            <option value="buscape">Buscapé</option>
+            <option value="zoom">Zoom</option>
+            <option value="kabum">KaBuM!</option>
+            <option value="mercadolivre">Mercado Livre</option>
+          </select>
+          <label for="filterProducts" class="sr-only">Filtrar</label>
+          <input id="filterProducts" type="search" placeholder="filtrar por palavra">
+          <a id="mlLink" class="ml-link" target="_blank" rel="noopener">Abrir busca no Mercado Livre ↗</a>
+        </div>
+        <div id="productGrid" class="product-grid"></div>
+      </section>
+
+      <section class="panel" data-panel="promos" hidden>
+        <div id="promoGrid" class="product-grid"></div>
+      </section>
+
+      <details class="log">
+        <summary>Log das fontes</summary>
+        <ul id="logList"></ul>
+      </details>
+    </main>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="about" class="view" hidden>
+    <header class="topbar"><a href="#/" class="logo">LOOP</a></header>
+    <main class="wrap about">
+      <h1 class="term">SOBRE</h1>
+      <p>Loop varre a web atrás de lojas, produtos e promoções de um nicho. Tudo roda local.</p>
+      <ul>
+        <li><b>Lojas</b> — busca web (Yahoo BR, com DuckDuckGo e Bing de reserva), agrupada por domínio e perfil de Instagram.</li>
+        <li><b>Produtos</b> — Buscapé (preço e loja da melhor oferta) + anúncios do Mercado Livre achados pela busca web.</li>
+        <li><b>Promoções</b> — Pelando (ofertas postadas pela comunidade, com preço e loja).</li>
+      </ul>
+      <p class="muted">Mercado Livre bloqueia raspagem direta (API 403 e verificação de conta), então preço do ML só aparece quando vem via Pelando.</p>
+      <p class="muted">Hélio Delfino Lopes de Alcântara — Pesquisador e pentester web especializado</p>
+    </main>
+  </section>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
